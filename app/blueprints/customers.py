@@ -10,11 +10,11 @@ def sample():
 
     # Handle POST request to add a new runner
     if request.method == 'POST':
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
+        sample_name = request.form['sample_name']
+        sample_size = request.form['sample_size']
 
         # Insert the new runner into the database
-        cursor.execute('INSERT INTO samples (sample_name, sample_size) VALUES (%s, %s)', (first_name, last_name))
+        cursor.execute('INSERT INTO samples (sample_name, sample_size) VALUES (%s, %s)', (sample_name, sample_size))
         db.commit()
 
         flash('New sample added successfully!', 'success')
@@ -22,7 +22,7 @@ def sample():
 
     # Handle GET request to display all runners
     cursor.execute('SELECT * FROM samples')
-    all_runners = cursor.fetchall()
+    all_samples = cursor.fetchall()
     return render_template('samples.html', all_samples=all_samples)
 
 @samples.route('/update_sample/<int:sample_id>', methods=['GET', 'POST'])
@@ -32,8 +32,8 @@ def update_sample(sample_id):
 
     if request.method == 'POST':
         # Update the runner's details
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
+        sample_name = request.form['sample_name']
+        sample_size = request.form['sample_size']
 
         cursor.execute('UPDATE samples SET sample_name = %s, sample_size = %s WHERE sample_id = %s', (sample_name, sample_size, sample_id))
         db.commit()
@@ -43,8 +43,8 @@ def update_sample(sample_id):
 
     # GET method: fetch runner's current data for pre-populating the form
     cursor.execute('SELECT * FROM samples WHERE sample_id = %s', (sample_id,))
-    current_runner = cursor.fetchone()
-    return render_template('update_sample.html', current_sample=current_sample)
+    current_sample = cursor.fetchone()
+    return render_template('update_samples.html', current_sample=current_sample)
 
 @samples.route('/delete_sample/<int:sample_id>', methods=['POST'])
 def delete_sample(sample_id):
